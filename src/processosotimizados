@@ -1,1 +1,46 @@
+@startuml
+skinparam style strictuml
+skinparam colorArrow green
+title Diagrama de Atividade - Sugestão de Melhoria (To-Be)
 
+start
+:Receber Título;
+:Enriquecimento de Dados e Análise de Score;
+:Notificação Digital Inicial (WhatsApp/E-mail);
+
+if (Devedor negociou via Portal de Autoatendimento?) then (Sim)
+  :Processar Pagamento;
+else (Não)
+  fork
+    :Emitir 1ª Carta com QR Code de Pagamento;
+  fork again
+    :Call Center Inteligente / Agente Virtual;
+  end merge
+  
+  if (Houve retorno ou contato efetivo?) then (Sim)
+    :Realizar Negociação / Acordo;
+    :Processar Pagamento;
+  else (Não)
+    if (Score de Crédito do Devedor é Alto?) then (Sim)
+      :Acionar Cobrador Externo (Foco Estratégico);
+      if (Localizou e há interesse?) then (Sim)
+        :Realizar Negociação / Acordo;
+        :Processar Pagamento;
+      else (Não)
+        :Protesto Automatizado em Lote;
+      endif
+    else (Não - Baixa probabilidade de recuperação)
+      :Protesto Automatizado em Lote;
+    endif
+  endif
+endif
+
+if (Pagamento foi compensado?) then (Sim)
+  :Repasse Automático para Empresa Contratante;
+else (Não)
+  :Devolver Título;
+endif
+
+:Processo de cobrança finalizado;
+stop
+@enduml
