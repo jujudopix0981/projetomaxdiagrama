@@ -1,1 +1,54 @@
+@startuml
+skinparam style strictuml
+skinparam activityShape octagon
+title Diagrama de Atividade - Processo Atual (As-Is)
 
+start
+:Receber Título;
+:Inserir no Sistema de Cobrança;
+fork
+  :Emitir 1ª Carta de Cobrança;
+  if (Obteve retorno da 1ª carta?) then (Sim)
+    :Iniciar Negociação;
+  else (Não)
+    :Enviar 2ª Carta de Cobrança;
+  endif
+fork again
+  :Cobrança por Telefone;
+  if (Conseguiu contato?) then (Sim)
+    if (Devedor tem interesse?) then (Sim)
+      :Iniciar Negociação;
+    else (Não)
+      :Protestar Título;
+      end
+    endif
+  else (Não)
+  endif
+end merge
+
+if (Telefone sem sucesso E 2ª carta sem retorno?) then (Sim)
+  :Acionar Cobrador Externo;
+  if (Localizou o devedor e ele tem interesse?) then (Sim)
+    :Iniciar Negociação;
+  else (Não)
+    :Protestar Título;
+    end
+  endif
+else (Apenas para continuar o fluxo das negociações)
+endif
+
+:Realizar Negociação do Pagamento;
+if (Houve acordo e o respectivo pagamento?) then (Sim)
+  :Transferir valores para a empresa contratante;
+else (Não)
+  :Protestar Título;
+  if (Título foi pago após o protesto?) then (Sim)
+    :Transferir valores para a empresa contratante;
+  else (Não)
+    :Devolver título;
+  endif
+endif
+
+:Processo de cobrança finalizado;
+stop
+@enduml
